@@ -37,23 +37,6 @@ cg = CoinGeckoAPI()
 
 app = Flask(__name__)
 
-
-@app.route('/', methods = ['POST','GET'])
-def index():
-        return render_template('index.html')
-
-@app.route('/index.html', methods = ['POST','GET'])
-def index2():
-        return render_template('index.html')
-
-@app.route('/blog.html', methods = ['POST','GET'])
-def blog():
-        return render_template('blog.html')
-
-@app.route('/documentation.html', methods = ['POST','GET'])
-def documentation():
-        return render_template('documentation.html')
-
 def getPrediction(cryptoName):
         data = cg.get_coin_market_chart_range_by_id(id = cryptoName, vs_currency='usd',from_timestamp= (datetime.now() - timedelta(days=720)).timestamp(),to_timestamp=datetime.now().timestamp())
         df = pd.DataFrame(data)
