@@ -16,43 +16,22 @@ from tensorflow.keras import Sequential
 import time
 import math
 from datetime import datetime,timedelta
-import seaborn as sns 
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
-
-
-# #end_time is current time fetched from the local machine
-# end_date=datetime.now()
-# #start_date is the date before 1 years
-# start_date=end_date-relativedelta(years=1)
-# #formatting dates in suitable forms
-# end_date=str(end_date.strftime('%Y-%m-%d'))
-# start_date=str(start_date.strftime('%Y-%m-%d'))
-# # print(end_date)
-# # print(start_date)
-# company_name='^NSEI'
-# stock_data=api.DataReader(company_name,'yahoo',start_date,end_date)
-# json = stock_data.to_json()
-# print(type(json))
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
+@app.route('/predict', methods = ['GET','POST'])
+def dataPredict():
+        req = request.get_json()
+        print(req)
+        res = make_response(str(getPrediction(request.form['name'])), 200)
+        return res
 
 
-@app.route('/', methods = ['POST','GET'])
-def index():
-        return render_template('index.html')
 
-@app.route('/index.html', methods = ['POST','GET'])
-def index2():
-        return render_template('index.html')
-
-@app.route('/blog.html', methods = ['POST','GET'])
-def blog():
-        return render_template('blog.html')
-
-@app.route('/documentation.html', methods = ['POST','GET'])
-def documentation():
-        return render_template('documentation.html')
 
 def getPrediction(cryptoName):
         data = cg.get_coin_market_chart_range_by_id(id = cryptoName, vs_currency='usd',from_timestamp= (datetime.now() - timedelta(days=720)).timestamp(),to_timestamp=datetime.now().timestamp())
@@ -94,12 +73,6 @@ def getPrediction(cryptoName):
         return y_pred
         
 
-@app.route('/predict', methods = ['GET','POST'])
-def dataPredict():
-        req = request.get_json()
-        print(req)
-        res = make_response(str(getPrediction(req)), 200)
-        return res
 
 if __name__ == "__main__":
     app.run(debug = True)
