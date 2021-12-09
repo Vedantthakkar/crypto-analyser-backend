@@ -8,26 +8,27 @@ from pandas_datareader import data as api
 from pandas_datareader._utils import RemoteDataError 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import csv
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Dense,LSTM
 from tensorflow.keras import Sequential
-import time
-import math
 from datetime import datetime,timedelta
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
-from flask_cors import CORS
+from flask_cors import CORS,cross_origin
 
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
 @app.route('/predict', methods = ['GET','POST'])
 def dataPredict():
-        req = request.get_json()
-        print(req)
-        res = make_response(str(getPrediction(request.form['name'])), 200)
+        data = request.json
+
+        res = make_response(str(getPrediction(data['name'])), 200)
         return res
 
 
